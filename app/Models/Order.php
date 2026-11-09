@@ -33,6 +33,8 @@ class Order extends Model
             'shipping_cost' => 'decimal:2',
             'tax_amount' => 'decimal:2',
             'total_amount' => 'decimal:2',
+            'paid_at' => 'datetime',
+            'cancelled_at' => 'datetime',
         ];
     }
 
