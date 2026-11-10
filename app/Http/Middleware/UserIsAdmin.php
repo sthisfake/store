@@ -22,7 +22,7 @@ class UserIsAdmin
             $request->session()->regenerateToken();
 
             return redirect()
-                ->route('admin.login')
+                ->route('admin.showLogin')
                 ->withErrors(['email' => 'Your account is inactive.']);
         }
 
