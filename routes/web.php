@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Auth\SessionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CustomerController;
 
 
 
@@ -47,6 +48,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         Route::patch('/products/{product}/images/{image}/primary',[ProductController::class, 'setPrimaryImage'])->name('products.images.primary');
         Route::delete('/products/{product}/images/{image}',[ProductController::class, 'destroyImage'])->name('products.images.destroy');
+
+        // customer section
+        Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
+        Route::get('/customers/{customer}/edit', [CustomerController::class, 'edit'])->name('customers.edit');
+        Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+        Route::patch('/customers/{customer}/status', [CustomerController::class, 'updateStatus'])->name('customers.status');
+        
 
         // logout 
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
