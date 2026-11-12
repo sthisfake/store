@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CustomerController;
+use App\Http\Controllers\Admin\OrderController;
+
 
 
 
@@ -56,6 +58,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
         Route::patch('/customers/{customer}/status', [CustomerController::class, 'updateStatus'])->name('customers.status');
         
+        // order section 
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
 
         // logout 
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
