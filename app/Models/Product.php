@@ -55,4 +55,10 @@ class Product extends Model
     public function reviews(){
         return $this->hasMany(Review::class);
     }
+
+    public function primaryImage()
+    {
+    return $this->hasOne(ProductImage::class)
+        ->where('is_primary', true);
+    }
 }
