@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ReviewController;
+
 
 
 
@@ -62,6 +64,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.status');
+
+        // review section
+        Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+        Route::patch('/reviews/{review}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
+        Route::patch('/reviews/{review}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
 
         // logout 
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');

@@ -15,6 +15,7 @@ class Review extends Model
         'comment',
         'is_approved',
         'approved_at',
+        'rejected_at',
     ];
 
     protected function casts(): array
@@ -23,11 +24,12 @@ class Review extends Model
             'rating' => 'integer',
             'is_approved' => 'boolean',
             'approved_at' => 'datetime',
+            'rejected_at' => 'datetime',
         ];
     }
 
     public function product(){
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Product::class)->withTrashed();
     }
 
     public function user(){

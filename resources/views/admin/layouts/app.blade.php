@@ -70,6 +70,16 @@
             >
                 Orders
             </a>
+            <a
+            href="{{ route('admin.reviews.index') }}"
+            @class([
+                'block rounded-xl px-4 py-3 text-sm font-semibold transition',
+                'bg-amber-400 text-slate-950' => request()->routeIs('admin.reviews.*'),
+                'text-slate-300 hover:bg-slate-800 hover:text-white' => ! request()->routeIs('admin.reviews.*'),
+            ])
+            >
+                Reviews
+            </a>
             </nav>
         </aside>
 
