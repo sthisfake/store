@@ -208,3 +208,29 @@ document.querySelectorAll('[data-product-carousel]').forEach((carousel) => {
     previousButton?.addEventListener('click', () => scroll(-1));
     nextButton?.addEventListener('click', () => scroll(1));
 });
+
+
+document.querySelectorAll('[data-product-gallery]').forEach((gallery) => {
+    const mainImage = gallery.querySelector('[data-gallery-main]');
+    const thumbnails = Array.from(
+        gallery.querySelectorAll('[data-gallery-thumbnail]'),
+    );
+
+    if (! mainImage) {
+        return;
+    }
+
+    thumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener('click', () => {
+            mainImage.src = thumbnail.dataset.imageUrl;
+
+            thumbnails.forEach((item) => {
+                item.classList.remove('border-orange-500');
+                item.classList.add('border-transparent');
+            });
+
+            thumbnail.classList.remove('border-transparent');
+            thumbnail.classList.add('border-orange-500');
+        });
+    });
+});

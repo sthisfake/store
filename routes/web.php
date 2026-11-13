@@ -9,14 +9,18 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
 
 
 
 
 
-
+// home page
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::redirect('/home', '/');
+
+// product page
+Route::get('/products/{product:slug}',[StorefrontProductController::class, 'show'])->name('products.show');
 
 // admin routes group
 Route::prefix('admin')->name('admin.')->group(function () {

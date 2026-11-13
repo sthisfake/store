@@ -7,88 +7,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-950 antialiased">
-    <header class="relative z-50 border-b border-slate-200 bg-white">
-        <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-            <a href="{{ route('home') }}" class="text-xl font-black tracking-tight">
-                Kaka Store
-            </a>
+    @include('store.partials.header', ['categories' => $categories])
 
-            <nav class="hidden items-center gap-7 text-sm font-semibold md:flex">
-                <a href="{{ route('home') }}" class="hover:text-orange-700">Home</a>
-
-                <div class="group/menu relative">
-                    <button type="button" class="flex items-center gap-2 py-3 hover:text-orange-700">
-                        Categories
-                        <span class="text-xs">v</span>
-                    </button>
-
-                    <div class="invisible absolute left-0 top-full w-64 translate-y-2 rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition group-hover/menu:visible group-hover/menu:translate-y-0 group-hover/menu:opacity-100 group-focus-within/menu:visible group-focus-within/menu:translate-y-0 group-focus-within/menu:opacity-100">
-                        @forelse ($categories as $category)
-                            <div class="group/category relative">
-                                <a href="#categories" class="flex items-center justify-between rounded-lg px-4 py-3 hover:bg-slate-100">
-                                    <span>{{ $category->name }}</span>
-                                    @if ($category->childrenCategory->isNotEmpty())
-                                        <span>&gt;</span>
-                                    @endif
-                                </a>
-
-                                @if ($category->childrenCategory->isNotEmpty())
-                                    <div class="invisible absolute left-full top-0 ml-2 w-72 rounded-xl border border-slate-200 bg-white p-3 opacity-0 shadow-xl transition group-hover/category:visible group-hover/category:opacity-100">
-                                        @foreach ($category->childrenCategory as $childCategory)
-                                            <div class="rounded-lg px-3 py-2 hover:bg-slate-50">
-                                                <a href="#categories" class="font-semibold">
-                                                    {{ $childCategory->name }}
-                                                </a>
-
-                                                @if ($childCategory->childrenCategory->isNotEmpty())
-                                                    <div class="mt-2 flex flex-wrap gap-2 border-l border-slate-200 pl-3">
-                                                        @foreach ($childCategory->childrenCategory as $grandchildCategory)
-                                                            <a href="#categories" class="text-xs font-medium text-slate-500 hover:text-orange-700">
-                                                                {{ $grandchildCategory->name }}
-                                                            </a>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
-                        @empty
-                            <p class="px-4 py-3 text-sm text-slate-500">No categories available.</p>
-                        @endforelse
-                    </div>
-                </div>
-
-                <a href="#deals" class="hover:text-orange-700">Deals</a>
-                <a href="#new-arrivals" class="hover:text-orange-700">New arrivals</a>
-            </nav>
-
-            <details class="relative md:hidden">
-                <summary class="cursor-pointer list-none rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold">
-                    Menu
-                </summary>
-
-                <div class="absolute right-0 top-12 w-72 rounded-xl border border-slate-200 bg-white p-3 shadow-xl">
-                    <a href="{{ route('home') }}" class="block rounded-lg px-3 py-2 font-semibold hover:bg-slate-100">Home</a>
-                    <a href="#deals" class="block rounded-lg px-3 py-2 font-semibold hover:bg-slate-100">Deals</a>
-                    <a href="#new-arrivals" class="block rounded-lg px-3 py-2 font-semibold hover:bg-slate-100">New arrivals</a>
-
-                    <div class="mt-2 border-t border-slate-200 pt-2">
-                        @foreach ($categories as $category)
-                            <div class="px-3 py-2">
-                                <p class="font-semibold">{{ $category->name }}</p>
-
-                                @foreach ($category->childrenCategory as $childCategory)
-                                    <p class="mt-1 pl-3 text-sm text-slate-500">{{ $childCategory->name }}</p>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </details>
-        </div>
-    </header>
 
     <main>
         <section data-hero-carousel class="relative bg-slate-950">
@@ -134,8 +54,8 @@
                                     <span class="text-3xl font-black">{{ number_format((float) $product->price, 2) }}</span>
                                 @endif
 
-                                <a href="#new-arrivals" class="rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white transition hover:bg-orange-600">
-                                    Shop collection
+                                <a href="{{ route('products.show', ['product' => $product->slug]) }}" class="rounded-full bg-orange-500 px-6 py-3 text-sm font-bold text-white transition hover:bg-orange-600">
+                                    View product
                                 </a>
                             </div>
                         </div>
@@ -221,7 +141,11 @@
 
                                 <div class="p-4">
                                     <p class="text-xs font-bold uppercase tracking-wider text-orange-700">{{ $product->category->name }}</p>
-                                    <h3 class="mt-2 font-bold">{{ $product->name }}</h3>
+                                    <h3 class="mt-2 font-bold">
+                                        <a href="{{ route('products.show', ['product' => $product->slug]) }}"class="hover:text-orange-700">
+                                            {{ $product->name }}
+                                        </a>
+                                    </h3>
 
                                     <div class="mt-4 flex items-baseline gap-3">
                                         <span class="text-xl font-black text-red-600">{{ number_format((float) $product->sale_price, 2) }}</span>
@@ -313,9 +237,11 @@
                                         <span class="text-xs font-semibold text-red-600">Out of stock</span>
                                     @endif
                                 </div>
-
-                                <h3 class="mt-3 font-bold">{{ $product->name }}</h3>
-
+                                    <h3 class="mt-3 font-bold">
+                                        <a href="{{ route('products.show', ['product' => $product->slug]) }}" class="hover:text-orange-700">
+                                            {{ $product->name }}
+                                        </a>
+                                    </h3>
                                 <div class="mt-4 flex items-baseline gap-3">
                                     @if ($product->isOnSale())
                                         <span class="text-lg font-black text-red-600">{{ number_format((float) $product->sale_price, 2) }}</span>
@@ -336,11 +262,7 @@
         </section>
     </main>
 
-    <footer class="bg-slate-950 text-white">
-        <div class="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-8 sm:flex-row sm:items-center sm:justify-between lg:px-8">
-            <p class="font-bold">Kaka Store</p>
-            <p class="text-sm text-white/50">{{ now()->year }} Kaka Store</p>
-        </div>
-    </footer>
+    @include('store.partials.footer')
+
 </body>
 </html>
