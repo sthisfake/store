@@ -98,6 +98,19 @@
                 </div>
 
                 <div>
+                    <label for="sale_price" class="mb-2 block text-sm font-medium">Sale price</label>
+                    <input
+                        id="sale_price"
+                        type="number"
+                        name="sale_price"
+                        value="{{ old('sale_price') }}"
+                        min="0"
+                        step="0.01"
+                        class="w-full rounded-lg border border-slate-300 px-3 py-2"
+                    >
+                </div>
+
+                <div>
                     <label for="stock_quantity" class="mb-2 block text-sm font-medium">
                         Stock quantity
                     </label>

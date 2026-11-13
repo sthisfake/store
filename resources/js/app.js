@@ -129,3 +129,82 @@ document.querySelectorAll('[data-image-upload]').forEach((uploader) => {
         showError('Delete an existing image before uploading another one.');
     }
 });
+
+document.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
+    const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
+    const dots = Array.from(carousel.querySelectorAll('[data-hero-dot]'));
+    const previousButton = carousel.querySelector('[data-hero-previous]');
+    const nextButton = carousel.querySelector('[data-hero-next]');
+
+    if (slides.length < 2) {
+        return;
+    }
+
+    let currentSlide = 0;
+    let timer;
+
+    const showSlide = (index) => {
+        currentSlide = (index + slides.length) % slides.length;
+
+        slides.forEach((slide, slideIndex) => {
+            slide.classList.toggle('hidden', slideIndex !== currentSlide);
+            slide.setAttribute('aria-hidden', slideIndex === currentSlide ? 'false' : 'true');
+        });
+
+        dots.forEach((dot, dotIndex) => {
+            const active = dotIndex === currentSlide;
+
+            dot.classList.toggle('w-8', active);
+            dot.classList.toggle('w-2.5', ! active);
+            dot.classList.toggle('opacity-50', ! active);
+        });
+    };
+
+    const startTimer = () => {
+        window.clearInterval(timer);
+        timer = window.setInterval(() => showSlide(currentSlide + 1), 5000);
+    };
+
+    previousButton.addEventListener('click', () => {
+        showSlide(currentSlide - 1);
+        startTimer();
+    });
+
+    nextButton.addEventListener('click', () => {
+        showSlide(currentSlide + 1);
+        startTimer();
+    });
+
+    dots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+            showSlide(Number(dot.dataset.heroDot));
+            startTimer();
+        });
+    });
+
+    carousel.addEventListener('mouseenter', () => window.clearInterval(timer));
+    carousel.addEventListener('mouseleave', startTimer);
+
+    showSlide(0);
+    startTimer();
+});
+
+document.querySelectorAll('[data-product-carousel]').forEach((carousel) => {
+    const viewport = carousel.querySelector('[data-product-viewport]');
+    const previousButton = carousel.querySelector('[data-product-previous]');
+    const nextButton = carousel.querySelector('[data-product-next]');
+
+    if (! viewport) {
+        return;
+    }
+
+    const scroll = (direction) => {
+        viewport.scrollBy({
+            left: direction * viewport.clientWidth * 0.8,
+            behavior: 'smooth',
+        });
+    };
+
+    previousButton?.addEventListener('click', () => scroll(-1));
+    nextButton?.addEventListener('click', () => scroll(1));
+});

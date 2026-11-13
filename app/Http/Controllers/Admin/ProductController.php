@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\models\Category;
-use App\models\ProductImage;
 use App\Enums\ProductStatus;
 use App\Enums\ProductType;
-use Illuminate\View\View;
+use App\Http\Controllers\Controller;
+use App\models\Category;
+use App\Models\Product;
+use App\models\ProductImage;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
-
-
-
-
-
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -60,6 +54,7 @@ class ProductController extends Controller
             'sku' => ['nullable', 'string', 'max:100', 'unique:products,sku'],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
+            'sale_price' => ['nullable', 'numeric', 'min:0', 'lt:price'],
             'status' => ['required', Rule::enum(ProductStatus::class)],
             'product_type' => ['required', Rule::enum(ProductType::class)],
             'stock_quantity' => ['required', 'integer', 'min:0'],
@@ -109,7 +104,8 @@ class ProductController extends Controller
         ]);
     }
 
-    public function update(Request $request,Product $product): RedirectResponse {
+    public function update(Request $request, Product $product): RedirectResponse
+    {
 
         $data = $request->validate([
             'category_id' => ['required', 'integer', 'exists:categories,id'],
@@ -129,6 +125,7 @@ class ProductController extends Controller
             ],
             'description' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
+            'sale_price' => ['nullable', 'numeric', 'min:0', 'lt:price'],
             'status' => ['required', Rule::enum(ProductStatus::class)],
             'product_type' => ['required', Rule::enum(ProductType::class)],
             'stock_quantity' => ['required', 'integer', 'min:0'],
@@ -175,7 +172,8 @@ class ProductController extends Controller
             ->with('success', 'Product deleted successfully.');
     }
 
-    public function setPrimaryImage(Product $product,ProductImage $image): RedirectResponse {
+    public function setPrimaryImage(Product $product, ProductImage $image): RedirectResponse
+    {
         if ($image->product_id !== $product->id) {
             abort(404);
         }
@@ -195,7 +193,8 @@ class ProductController extends Controller
             ->with('success', 'primery image changed successfully.');
     }
 
-    public function destroyImage(Product $product,ProductImage $image): RedirectResponse {
+    public function destroyImage(Product $product, ProductImage $image): RedirectResponse
+    {
         if ($image->product_id !== $product->id) {
             abort(404);
         }
@@ -217,7 +216,17 @@ class ProductController extends Controller
             }
         });
 
-        Storage::disk('public')->delete($imagePath);
+        // this is temp 
+        // original
+        //Storage::disk('public')->delete($imagePath);
+        // temp bec of seeders use same image for everythign
+        $imageStillUsed = ProductImage::query()
+        ->where('image_path', $imagePath)
+        ->exists();
+
+        if (! $imageStillUsed) {
+            Storage::disk('public')->delete($imagePath);
+        }
 
         return back()->with('success', 'Product image deleted.');
     }
@@ -248,5 +257,4 @@ class ProductController extends Controller
             $nextSortOrder++;
         }
     }
-
 }
