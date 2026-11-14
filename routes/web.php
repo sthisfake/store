@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
+use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
+
 
 
 
@@ -21,6 +23,9 @@ Route::redirect('/home', '/');
 
 // product page
 Route::get('/products/{product:slug}',[StorefrontProductController::class, 'show'])->name('products.show');
+
+// category page
+Route::get('/categories/{category:slug}',[StorefrontCategoryController::class, 'show'])->name('categories.show');
 
 // admin routes group
 Route::prefix('admin')->name('admin.')->group(function () {

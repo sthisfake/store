@@ -12,22 +12,31 @@
     <main>
         <section class="border-b border-slate-200 bg-white">
             <div class="mx-auto max-w-7xl px-5 py-5 lg:px-8">
-                <nav class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                    <a href="{{ route('home') }}" class="hover:text-orange-700">
-                        Home
+            <nav class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                @if ($product->category->parentCategory)
+                    <a
+                        href="{{ route('categories.show', ['category' => $product->category->parentCategory->slug]) }}"
+                        class="hover:text-orange-700"
+                    >
+                        {{ $product->category->parentCategory->name }}
                     </a>
 
                     <span>/</span>
+                @endif
 
-                    @if ($product->category->parentCategory)
-                        <span>{{ $product->category->parentCategory->name }}</span>
-                        <span>/</span>
-                    @endif
+                <a
+                    href="{{ route('categories.show', ['category' => $product->category->slug]) }}"
+                    class="hover:text-orange-700"
+                >
+                    {{ $product->category->name }}
+                </a>
 
-                    <span>{{ $product->category->name }}</span>
-                    <span>/</span>
-                    <span class="text-slate-900">{{ $product->name }}</span>
-                </nav>
+                <span>/</span>
+
+                <span class="text-slate-900">
+                    {{ $product->name }}
+                </span>
+            </nav>
             </div>
         </section>
 

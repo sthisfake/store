@@ -174,7 +174,14 @@
                     <article class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
                         <div class="flex items-start justify-between gap-4">
                             <div>
-                                <h3 class="text-lg font-bold">{{ $category->name }}</h3>
+                                <h3 class="text-lg font-bold">
+                                    <a
+                                        href="{{ route('categories.show', ['category' => $category->slug]) }}"
+                                        class="hover:text-orange-700"
+                                    >
+                                        {{ $category->name }}
+                                    </a>
+                                </h3>
                                 <p class="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">
                                     {{ $category->description ?: 'Explore products in this category.' }}
                                 </p>
