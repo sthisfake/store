@@ -107,56 +107,129 @@
             @endif
         </section>
 
-        <section id="deals" data-product-carousel class="border-b border-slate-200 bg-orange-50">
+        <section
+            id="deals"
+            data-product-carousel
+            class="border-b border-slate-200 bg-orange-50"
+        >
             <div class="mx-auto max-w-7xl px-5 py-12 lg:px-8">
-                <div class="mb-6 flex items-end justify-between gap-5">
-                    <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-700">Limited offers</p>
-                        <h2 class="mt-2 text-3xl font-black tracking-tight">Biggest discounts</h2>
-                    </div>
+                <div class="mb-6">
+                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-700">
+                        Limited offers
+                    </p>
 
-                    @if ($discountedProducts->count() > 1)
-                        <div class="flex gap-2">
-                            <button type="button" data-product-previous aria-label="Previous products" class="grid size-10 place-items-center rounded-full border border-slate-300 bg-white font-bold hover:border-slate-950">&lt;</button>
-                            <button type="button" data-product-next aria-label="Next products" class="grid size-10 place-items-center rounded-full border border-slate-300 bg-white font-bold hover:border-slate-950">&gt;</button>
-                        </div>
-                    @endif
+                    <h2 class="mt-2 text-3xl font-black tracking-tight">
+                        Biggest discounts
+                    </h2>
                 </div>
 
                 @if ($discountedProducts->isNotEmpty())
-                    <div data-product-viewport class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-3 [scrollbar-width:none]">
-                        @foreach ($discountedProducts as $product)
-                            <article class="min-w-[250px] snap-start overflow-hidden rounded-2xl border border-orange-200 bg-white sm:min-w-[290px]">
-                                <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
-                                    @if ($product->primaryImage)
-                                        <img src="{{ asset('storage/'.$product->primaryImage->image_path) }}" alt="{{ $product->name }}" class="h-full w-full object-cover">
-                                    @else
-                                        <div class="grid h-full place-items-center text-sm text-slate-400">No image</div>
-                                    @endif
+                    <div class="relative">
+                        @if ($discountedProducts->count() > 1)
+                            <button
+                                type="button"
+                                data-product-previous
+                                aria-label="Previous products"
+                                class="absolute left-2 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-lg transition hover:bg-slate-950 hover:text-white"
+                            >
+                                <svg
+                                    class="size-5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M15 19l-7-7 7-7"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            </button>
 
-                                    <span class="absolute left-3 top-3 rounded-full bg-red-600 px-3 py-1 text-xs font-black text-white">
-                                        -{{ $product->discountPercentage() }}%
-                                    </span>
-                                </div>
+                            <button
+                                type="button"
+                                data-product-next
+                                aria-label="Next products"
+                                class="absolute right-2 top-1/2 z-10 grid size-11 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white text-slate-900 shadow-lg transition hover:bg-slate-950 hover:text-white"
+                            >
+                                <svg
+                                    class="size-5"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M9 5l7 7-7 7"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            </button>
+                        @endif
 
-                                <div class="p-4">
-                                    <p class="text-xs font-bold uppercase tracking-wider text-orange-700">{{ $product->category->name }}</p>
-                                    <h3 class="mt-2 font-bold">
-                                        <a href="{{ route('products.show', ['product' => $product->slug]) }}"class="hover:text-orange-700">
-                                            {{ $product->name }}
-                                        </a>
-                                    </h3>
+                        <div
+                            data-product-viewport
+                            class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-14 pb-3 [scrollbar-width:none]"
+                        >
+                            @foreach ($discountedProducts as $product)
+                                <article class="min-w-[250px] snap-start overflow-hidden rounded-2xl border border-orange-200 bg-white sm:min-w-[290px]">
+                                    <a
+                                        href="{{ route('products.show', ['product' => $product->slug]) }}"
+                                        class="block"
+                                    >
+                                        <div class="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                                            @if ($product->primaryImage)
+                                                <img
+                                                    src="{{ asset('storage/'.$product->primaryImage->image_path) }}"
+                                                    alt="{{ $product->name }}"
+                                                    class="h-full w-full object-cover transition duration-300 hover:scale-105"
+                                                >
+                                            @else
+                                                <div class="grid h-full place-items-center text-sm text-slate-400">
+                                                    No image
+                                                </div>
+                                            @endif
 
-                                    <div class="mt-4 flex items-baseline gap-3">
-                                        <span class="text-xl font-black text-red-600">{{ number_format((float) $product->sale_price, 2) }}</span>
-                                        <span class="text-sm text-slate-400 line-through">{{ number_format((float) $product->price, 2) }}</span>
+                                            <span class="absolute left-3 top-3 rounded-full bg-red-600 px-3 py-1 text-xs font-black text-white">
+                                                -{{ $product->discountPercentage() }}%
+                                            </span>
+                                        </div>
+                                    </a>
+
+                                    <div class="p-4">
+                                        <p class="text-xs font-bold uppercase tracking-wider text-orange-700">
+                                            {{ $product->category->name }}
+                                        </p>
+
+                                        <h3 class="mt-2 font-bold">
+                                            <a
+                                                href="{{ route('products.show', ['product' => $product->slug]) }}"
+                                                class="hover:text-orange-700"
+                                            >
+                                                {{ $product->name }}
+                                            </a>
+                                        </h3>
+
+                                        <div class="mt-4 flex items-baseline gap-3">
+                                            <span class="text-xl font-black text-red-600">
+                                                {{ number_format((float) $product->sale_price, 2) }}
+                                            </span>
+
+                                            <span class="text-sm text-slate-400 line-through">
+                                                {{ number_format((float) $product->price, 2) }}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </article>
-                        @endforeach
+                                </article>
+                            @endforeach
+                        </div>
                     </div>
                 @else
-                    <div class="rounded-2xl border border-dashed border-orange-300 bg-white/60 p-8 text-slate-500">
+                    <div class="rounded-2xl border border-dashed border-orange-300 bg-white/60 p-8 text-center text-slate-500">
                         Special offers are coming soon.
                     </div>
                 @endif
