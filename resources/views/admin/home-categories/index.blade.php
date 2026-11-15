@@ -25,8 +25,8 @@
                     <div
                         class="relative aspect-[5/2] overflow-hidden"
                         @style([
-    'background-color: '.$tile->background_color,
-])
+                            'background-color: '.$tile->background_color,
+                        ])
                     >
                         <img
                             src="{{ asset('storage/'.$tile->image_path) }}"
@@ -37,7 +37,9 @@
                         <div class="absolute inset-0 grid place-items-center p-4">
                             <p
                                 class="text-center text-xl font-black"
-                                style="color: {{ $tile->textColor() }}"
+                                @style([
+                                    'color: '.$tile->textColor(),
+                                ])
                             >
                                 {{ $tile->category->name }}
                             </p>
