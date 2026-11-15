@@ -23,6 +23,8 @@ class Product extends Model
         'product_type',
         'stock_quantity',
         'track_inventory',
+        'show_on_home_slider',
+        'home_slider_order',
     ];
 
     protected function casts(): array
@@ -34,6 +36,8 @@ class Product extends Model
             'product_type' => ProductType::class,
             'stock_quantity' => 'integer',
             'track_inventory' => 'boolean',
+            'show_on_home_slider' => 'boolean',
+            'home_slider_order' => 'integer',
         ];
     }
 
