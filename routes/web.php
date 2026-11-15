@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
+use App\Http\Controllers\Admin\HomeSliderController;
+
 
 
 
@@ -75,6 +77,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::patch('/reviews/{review}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
         Route::patch('/reviews/{review}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
+
+        // home slider section
+        Route::get('/home-slider', [HomeSliderController::class, 'index'])->name('home-slider.index');
+        Route::post('/home-slider/{product}', [HomeSliderController::class, 'store'])->name('home-slider.store');
+        Route::patch('/home-slider/{product}/order', [HomeSliderController::class, 'updateOrder'])->name('home-slider.order');
+        Route::delete('/home-slider/{product}', [HomeSliderController::class, 'destroy'])->name('home-slider.destroy');
 
         // logout 
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');

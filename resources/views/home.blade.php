@@ -65,8 +65,8 @@
                 <div class="mx-auto flex min-h-[480px] max-w-7xl items-center px-5 py-16 text-white lg:px-8">
                     <div>
                         <p class="text-xs font-bold uppercase tracking-[0.3em] text-orange-400">Kaka Store</p>
-                        <h1 class="mt-4 max-w-2xl text-5xl font-black tracking-tight">Products worth coming back for.</h1>
-                        <p class="mt-5 text-white/60">Add primary images to active products to populate this slider.</p>
+                        <h4 class="mt-4 max-w-2xl text-5xl font-black tracking-tight">Products worth coming back for.</h4>
+                        
                     </div>
                 </div>
             @endforelse

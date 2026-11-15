@@ -80,6 +80,16 @@
             >
                 Reviews
             </a>
+            <a
+                href="{{ route('admin.home-slider.index') }}"
+                @class([
+                    'block rounded-xl px-4 py-3 text-sm font-semibold transition',
+                    'bg-amber-400 text-slate-950' => request()->routeIs('admin.home-slider.*'),
+                    'text-slate-300 hover:bg-slate-800 hover:text-white' => ! request()->routeIs('admin.home-slider.*'),
+                ])
+            >
+                Home slider
+            </a>
             </nav>
         </aside>
 

@@ -27,11 +27,16 @@ class HomeController extends Controller
 
         ])->orderBy('sort_order')->orderBy('name')->get();
 
-        $heroProducts = Product::query()->where('status', ProductStatus::ACTIVE->value)->whereHas('category', function ($query): void {
+        $heroProducts = Product::query()->where('show_on_home_slider', true)->where('status', ProductStatus::ACTIVE->value)->whereHas('category', function ($query): void {
 
                 $query->where('is_active', true);
 
-        })->whereHas('primaryImage')->with(['category:id,name','primaryImage:id,product_id,image_path'])->latest()->limit(5)->get();
+            })->whereHas('primaryImage')->with([
+                
+                'category:id,name',
+                'primaryImage:id,product_id,image_path',
+
+            ])->orderBy('home_slider_order')->orderBy('name')->limit(5)->get();
 
         $discountedProducts = Product::query()->where('status', ProductStatus::ACTIVE->value)->whereNotNull('sale_price')->whereColumn('sale_price', '<', 'price')->whereHas('category', function ($query): void {
 
