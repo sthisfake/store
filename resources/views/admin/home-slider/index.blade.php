@@ -72,7 +72,7 @@
                                 name="home_slider_order"
                                 value="{{ $product->home_slider_order }}"
                                 min="0"
-                                max="1000"
+                                max="5"
                                 class="w-24 rounded-lg border border-slate-300 px-3 py-2"
                             >
                         </div>

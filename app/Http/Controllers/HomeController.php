@@ -6,6 +6,8 @@ use App\Enums\ProductStatus;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\View\View;
+use App\Models\HomeCategoryTile;
+
 
 class HomeController extends Controller
 {
@@ -50,11 +52,18 @@ class HomeController extends Controller
 
             })->with(['category:id,name','primaryImage:id,product_id,image_path'])->latest()->limit(8)->get();
 
+        $homeCategoryTiles = HomeCategoryTile::query()->whereHas('category', function ($query): void {
+
+                       $query->where('is_active', true);
+
+            })->with('category:id,name,slug')->orderBy('sort_order')->orderBy('id')->limit(10)->get();
+
         return view('home', [
             'categories' => $categories,
             'heroProducts' => $heroProducts,
             'discountedProducts' => $discountedProducts,
             'products' => $products,
+            'homeCategoryTiles' => $homeCategoryTiles,
         ]);
     }
 }

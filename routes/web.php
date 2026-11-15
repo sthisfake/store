@@ -12,6 +12,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Storefront\ProductController as StorefrontProductController;
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
 use App\Http\Controllers\Admin\HomeSliderController;
+use App\Http\Controllers\Admin\HomeCategoryController;
+
 
 
 
@@ -83,6 +85,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/home-slider/{product}', [HomeSliderController::class, 'store'])->name('home-slider.store');
         Route::patch('/home-slider/{product}/order', [HomeSliderController::class, 'updateOrder'])->name('home-slider.order');
         Route::delete('/home-slider/{product}', [HomeSliderController::class, 'destroy'])->name('home-slider.destroy');
+
+        // home category section
+        Route::get('/home-categories', [HomeCategoryController::class, 'index'])->name('home-categories.index');
+        Route::post('/home-categories', [HomeCategoryController::class, 'store'])->name('home-categories.store');
+        Route::put('/home-categories/{tile}', [HomeCategoryController::class, 'update'])->name('home-categories.update');
+        Route::delete('/home-categories/{tile}', [HomeCategoryController::class, 'destroy'])->name('home-categories.destroy');
 
         // logout 
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');

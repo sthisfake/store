@@ -236,52 +236,59 @@
             </div>
         </section>
 
-        <section id="categories" class="mx-auto max-w-7xl px-5 py-16 lg:px-8">
-            <div class="mb-8">
-                <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-700">Browse departments</p>
-                <h2 class="mt-2 text-3xl font-black tracking-tight">Shop by category</h2>
-            </div>
+        @if ($homeCategoryTiles->isNotEmpty())
+            <section id="categories" class="mx-auto max-w-7xl px-5 py-16 lg:px-8">
+                <div class="mb-10 text-center">
+                    <p class="text-xs font-bold uppercase tracking-[0.25em] text-orange-700">
+                        Browse departments
+                    </p>
 
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                @forelse ($categories as $category)
-                    <article class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                        <div class="flex items-start justify-between gap-4">
-                            <div>
-                                <h3 class="text-lg font-bold">
-                                    <a
-                                        href="{{ route('categories.show', ['category' => $category->slug]) }}"
-                                        class="hover:text-orange-700"
-                                    >
-                                        {{ $category->name }}
-                                    </a>
+                    <h2 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
+                        What are you looking for?
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                    @foreach ($homeCategoryTiles as $tile)
+                        <a
+                            href="{{ route('categories.show', ['category' => $tile->category->slug]) }}"
+                            class="group relative aspect-[5/3] overflow-hidden rounded-2xl shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+                            @style([
+                                'background-color: '.$tile->background_color,
+                            ])
+                        >
+                            <img
+                                src="{{ asset('storage/'.$tile->image_path) }}"
+                                alt="{{ $tile->category->name }}"
+                                class="absolute inset-0 h-full w-full object-cover opacity-40 mix-blend-luminosity transition duration-300 group-hover:scale-105"
+                            >
+
+                            <div
+                                class="absolute inset-0"
+                            @style([
+                                'background-image: linear-gradient(135deg, '
+                                    .$tile->background_color
+                                    .'E6, '
+                                    .$tile->background_color
+                                    .'80)',
+                            ])
+                            ></div>
+
+                            <div class="absolute inset-0 grid place-items-center p-4">
+                                <h3
+                                    class="text-center text-base font-black sm:text-lg"
+                                @style([
+                                    'color: '.$tile->textColor(),
+                                ])
+                                >
+                                    {{ $tile->category->name }}
                                 </h3>
-                                <p class="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">
-                                    {{ $category->description ?: 'Explore products in this category.' }}
-                                </p>
                             </div>
-
-                            <span class="grid size-10 shrink-0 place-items-center rounded-full bg-orange-100 text-sm font-bold text-orange-700">
-                                {{ $category->active_products_count }}
-                            </span>
-                        </div>
-
-                        @if ($category->childrenCategory->isNotEmpty())
-                            <div class="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
-                                @foreach ($category->childrenCategory as $childCategory)
-                                    <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                                        {{ $childCategory->name }}
-                                    </span>
-                                @endforeach
-                            </div>
-                        @endif
-                    </article>
-                @empty
-                    <div class="rounded-2xl border border-dashed border-slate-300 p-8 text-slate-500 sm:col-span-2 lg:col-span-3">
-                        No active categories are available.
-                    </div>
-                @endforelse
-            </div>
-        </section>
+                        </a>
+                    @endforeach
+                </div>
+            </section>
+        @endif
 
         <section id="new-arrivals" class="border-y border-slate-200 bg-white">
             <div class="mx-auto max-w-7xl px-5 py-16 lg:px-8">

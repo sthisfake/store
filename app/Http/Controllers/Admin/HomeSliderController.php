@@ -8,6 +8,8 @@ use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+
 
 class HomeSliderController extends Controller
 {
@@ -77,43 +79,101 @@ class HomeSliderController extends Controller
             ]);
         }
 
-        $nextOrder = (int) Product::query()->where('show_on_home_slider', true)->max('home_slider_order');
+        $sliderProductCount = Product::query()
+            ->where('show_on_home_slider', true)
+            ->count();
+
+        if ($sliderProductCount >= 5) {
+            return back()->withErrors([
+                'slider' => 'The homepage slider can contain a maximum of 5 products.',
+            ]);
+        }
 
         $product->update([
             'show_on_home_slider' => true,
-            'home_slider_order' => $nextOrder + 1,
+            'home_slider_order' => $sliderProductCount + 1,
         ]);
 
         return back()->with('success', 'Product added to the homepage slider.');
     }
 
-    public function updateOrder(Request $request,Product $product): RedirectResponse {
+    public function updateOrder(Request $request,Product $product,): RedirectResponse {
 
         if (! $product->show_on_home_slider) {
             abort(404);
         }
 
         $data = $request->validate([
-            'home_slider_order' => ['required', 'integer', 'min:1', 'max:5'],
+            'home_slider_order' => [
+                'required',
+                'integer',
+                'min:1',
+                'max:5',
+            ],
         ]);
 
-        $product->update([
-            'home_slider_order' => $data['home_slider_order'],
-        ]);
+        $sliderProductCount = Product::query()->where('show_on_home_slider', true)->count();
+
+        $newPosition = (int) $data['home_slider_order'];
+
+        if ($newPosition > $sliderProductCount) {
+            return back()->withErrors([
+                'home_slider_order' => "The position must be between 1 and {$sliderProductCount}.",
+            ]);
+        }
+
+        $oldPosition = $product->home_slider_order;
+
+        DB::transaction(function () use ($product,$oldPosition,$newPosition,): void {
+
+            if ($newPosition < $oldPosition) {
+                Product::query()
+                    ->where('show_on_home_slider', true)
+                    ->whereBetween(
+                        'home_slider_order',
+                        [$newPosition, $oldPosition - 1],
+                    )
+                    ->increment('home_slider_order');
+            }
+
+            if ($newPosition > $oldPosition) {
+                Product::query()
+                    ->where('show_on_home_slider', true)
+                    ->whereBetween(
+                        'home_slider_order',
+                        [$oldPosition + 1, $newPosition],
+                    )
+                    ->decrement('home_slider_order');
+            }
+
+            $product->update([
+                'home_slider_order' => $newPosition,
+            ]);
+        });
 
         return back()->with('success', 'Slider order updated.');
     }
 
-    public function destroy(Product $product): RedirectResponse
-    {
+    public function destroy(Product $product): RedirectResponse {
+
         if (! $product->show_on_home_slider) {
             abort(404);
         }
 
-        $product->update([
-            'show_on_home_slider' => false,
-            'home_slider_order' => 0,
-        ]);
+        $deletedPosition = $product->home_slider_order;
+
+        DB::transaction(function () use ($product,$deletedPosition,): void {
+            
+            $product->update([
+                'show_on_home_slider' => false,
+                'home_slider_order' => 0,
+            ]);
+
+            Product::query()
+                ->where('show_on_home_slider', true)
+                ->where('home_slider_order', '>', $deletedPosition)
+                ->decrement('home_slider_order');
+        });
 
         return back()->with('success', 'Product removed from the homepage slider.');
     }
