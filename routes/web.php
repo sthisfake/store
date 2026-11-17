@@ -13,6 +13,8 @@ use App\Http\Controllers\Storefront\ProductController as StorefrontProductContro
 use App\Http\Controllers\Storefront\CategoryController as StorefrontCategoryController;
 use App\Http\Controllers\Admin\HomeSliderController;
 use App\Http\Controllers\Admin\HomeCategoryController;
+use App\Http\Controllers\Auth\CustomerSessionController;
+use App\Http\Controllers\Auth\RegistrationController;
 
 
 
@@ -96,3 +98,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [SessionController::class, 'logout'])->name('logout');
     });
 });
+
+// user auth
+Route::middleware('guest')->group(function () {
+
+    Route::get('/login', [CustomerSessionController::class, 'show'])->name('login');
+    Route::post('/login', [CustomerSessionController::class, 'login'])->middleware('throttle:5,1')->name('login.store');
+    Route::get('/register', [RegistrationController::class, 'show'])->name('register');
+    Route::post('/register', [RegistrationController::class, 'register'])->middleware('throttle:5,1')->name('register.store');
+
+});
+
+Route::post('/logout', [CustomerSessionController::class, 'logout'])->middleware('auth')->name('logout');

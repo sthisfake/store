@@ -18,11 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ]);
 
     $middleware->redirectGuestsTo(
-        fn (Request $request) => route('admin.showLogin')
+        fn (Request $request) => $request->is('admin') || $request->is('admin/*')? route('admin.showLogin'): route('login')
     );
 
-    $middleware->redirectUsersTo(
-        fn (Request $request) => route('admin.dashboard')
+    $middleware->redirectUsersTo(fn (Request $request) => $request->user()?->role === 'admin'? route('admin.dashboard'): route('home')
     );
     })
     ->withExceptions(function (Exceptions $exceptions): void {

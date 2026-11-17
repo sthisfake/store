@@ -85,7 +85,47 @@
                 New arrivals
             </a>
         </nav>
+        <div class="ml-auto hidden items-center gap-3 md:flex">
+            @guest
+                <a
+                    href="{{ route('login') }}"
+                    class="text-sm font-semibold hover:text-orange-700"
+                >
+                    Login
+                </a>
 
+                <a
+                    href="{{ route('register') }}"
+                    class="rounded-lg bg-slate-950 px-4 py-2 text-sm font-bold text-white hover:bg-orange-600"
+                >
+                    Sign up
+                </a>
+            @else
+                <span class="text-sm font-semibold">
+                    {{ auth()->user()->name }}
+                </span>
+
+                @if (auth()->user()->role === 'admin')
+                    <a
+                        href="{{ route('admin.dashboard') }}"
+                        class="text-sm font-semibold text-orange-700"
+                    >
+                        Admin panel
+                    </a>
+                @endif
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold"
+                    >
+                        Logout
+                    </button>
+                </form>
+            @endguest
+        </div>
         <details class="relative ml-auto md:hidden">
             <summary class="cursor-pointer list-none rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold">
                 Menu
@@ -112,6 +152,39 @@
                 >
                     New arrivals
                 </a>
+
+                <div class="mt-2 border-t border-slate-200 pt-2">
+                    @guest
+                        <a
+                            href="{{ route('login') }}"
+                            class="block rounded-lg px-3 py-2 font-semibold hover:bg-slate-100"
+                        >
+                            Login
+                        </a>
+
+                        <a
+                            href="{{ route('register') }}"
+                            class="block rounded-lg px-3 py-2 font-semibold hover:bg-slate-100"
+                        >
+                            Sign up
+                        </a>
+                    @else
+                        <p class="px-3 py-2 font-semibold">
+                            {{ auth()->user()->name }}
+                        </p>
+
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+
+                            <button
+                                type="submit"
+                                class="w-full rounded-lg px-3 py-2 text-left font-semibold hover:bg-slate-100"
+                            >
+                                Logout
+                            </button>
+                        </form>
+                    @endguest
+                </div>
 
                 <div class="mt-2 border-t border-slate-200 pt-2">
                     @foreach ($categories as $category)
