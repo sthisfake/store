@@ -1,5 +1,5 @@
 <header class="relative z-50 border-b border-slate-200 bg-white">
-    <div class="mx-auto flex max-w-7xl items-center gap-10 px-5 py-4 lg:px-8">
+    <div class="flex w-full items-center gap-10 px-5 py-4 lg:px-8">
         <a href="{{ route('home') }}" class="shrink-0 text-xl font-black tracking-tight">
             Kaka Store
         </a>
@@ -12,10 +12,9 @@
             <div class="group/menu relative">
                 <button
                     type="button"
-                    class="flex items-center gap-2 py-3 hover:text-orange-700"
+                    class="py-3 hover:text-orange-700"
                 >
                     Categories
-                    <span class="text-xs">v</span>
                 </button>
 
                 <div class="pointer-events-none invisible absolute left-0 top-full w-64 pt-2 opacity-0 transition group-hover/menu:pointer-events-auto group-hover/menu:visible group-hover/menu:opacity-100 group-focus-within/menu:pointer-events-auto group-focus-within/menu:visible group-focus-within/menu:opacity-100">
@@ -76,7 +75,7 @@
                 href="{{ route('home') }}#deals"
                 class="hover:text-orange-700"
             >
-                Deals
+                discounts
             </a>
 
             <a
