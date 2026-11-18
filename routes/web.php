@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\HomeSliderController;
 use App\Http\Controllers\Admin\HomeCategoryController;
 use App\Http\Controllers\Auth\CustomerSessionController;
 use App\Http\Controllers\Auth\RegistrationController;
+use App\Http\Controllers\Account\ProfileController;
 
 
 
@@ -110,3 +111,10 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [CustomerSessionController::class, 'logout'])->middleware('auth')->name('logout');
+
+// profile section
+Route::prefix('account')->name('account.')->middleware(['auth', 'customer'])->group(function () {
+        Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+});

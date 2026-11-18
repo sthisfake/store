@@ -101,9 +101,18 @@
                     Sign up
                 </a>
             @else
-                <span class="text-sm font-semibold">
-                    {{ auth()->user()->name }}
-                </span>
+                @if (auth()->user()->role === 'customer')
+                    <a
+                        href="{{ route('account.profile') }}"
+                        class="text-sm font-semibold hover:text-orange-700"
+                    >
+                        {{ auth()->user()->name }}
+                    </a>
+                @else
+                    <span class="text-sm font-semibold">
+                        {{ auth()->user()->name }}
+                    </span>
+                @endif
 
                 @if (auth()->user()->role === 'admin')
                     <a
@@ -169,9 +178,18 @@
                             Sign up
                         </a>
                     @else
-                        <p class="px-3 py-2 font-semibold">
-                            {{ auth()->user()->name }}
-                        </p>
+                        @if (auth()->user()->role === 'customer')
+                            <a
+                                href="{{ route('account.profile') }}"
+                                class="block rounded-lg px-3 py-2 font-semibold hover:bg-slate-100"
+                            >
+                                My profile
+                            </a>
+                        @else
+                            <p class="px-3 py-2 font-semibold">
+                                {{ auth()->user()->name }}
+                            </p>
+                        @endif
 
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
