@@ -53,10 +53,16 @@ class CustomerSessionController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
+
+        $cart = $request->session()->get('store_cart',[]);
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+
+        $request->session()->put('store_cart',$cart);
 
         return redirect()->route('home');
     }

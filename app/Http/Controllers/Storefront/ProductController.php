@@ -7,10 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\View\View;
+use Illuminate\Http\Request;
+use App\Models\Review;
+
 
 class ProductController extends Controller
 {
-    public function show(Product $product): View
+    public function show(Request $request,Product $product): View
     {
         $product = Product::query()->whereKey($product->id)->where('status', ProductStatus::ACTIVE->value)->whereHas('category', function ($query): void {
 
@@ -51,6 +54,16 @@ class ProductController extends Controller
 
         $primaryImage = $product->productImages->firstWhere('is_primary', true)?? $product->productImages->first();
 
+        $customerReview = null;
+        $canSubmitReview = false;
+
+        if ($request->user()?->role === 'customer'&& $request->user()->is_active) {
+
+            $customerReview = Review::query()->where('product_id', $product->id)->where('user_id', $request->user()->id)->first();
+
+            $canSubmitReview = $customerReview === null || ! $customerReview->is_approved;
+        }
+
         return view('store.products.show', [
             'product' => $product,
             'primaryImage' => $primaryImage,
@@ -59,6 +72,8 @@ class ProductController extends Controller
             'averageRating' => $averageRating,
             'relatedProducts' => $relatedProducts,
             'categories' => $categories,
+            'customerReview' => $customerReview,
+            'canSubmitReview' => $canSubmitReview,
         ]);
     }
 }

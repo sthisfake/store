@@ -234,3 +234,44 @@ document.querySelectorAll('[data-product-gallery]').forEach((gallery) => {
         });
     });
 });
+
+const cartDrawer = document.querySelector('[data-cart-drawer]');
+const cartOverlay = document.querySelector('[data-cart-overlay]');
+const cartOpenButtons = document.querySelectorAll('[data-cart-open]');
+const cartCloseButtons = document.querySelectorAll('[data-cart-close]');
+
+if (cartDrawer && cartOverlay) {
+    const openCart = () => {
+        cartDrawer.classList.remove('translate-x-full');
+        cartOverlay.classList.remove('hidden');
+        cartDrawer.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('overflow-hidden');
+    };
+
+    const closeCart = () => {
+        cartDrawer.classList.add('translate-x-full');
+        cartOverlay.classList.add('hidden');
+        cartDrawer.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
+    };
+
+    cartOpenButtons.forEach((button) => {
+        button.addEventListener('click', openCart);
+    });
+
+    cartCloseButtons.forEach((button) => {
+        button.addEventListener('click', closeCart);
+    });
+
+    cartOverlay.addEventListener('click', closeCart);
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+            closeCart();
+        }
+    });
+
+    if (cartDrawer.dataset.open === 'true') {
+        openCart();
+    }
+}

@@ -158,19 +158,49 @@
                     </div>
                 </div>
 
-                <button
-                    type="button"
-                    disabled
-                    @class([
-                        'mt-6 w-full rounded-xl px-6 py-4 text-sm font-bold text-white',
-                        'cursor-not-allowed bg-slate-300' => $product->track_inventory && $product->stock_quantity === 0,
-                        'cursor-not-allowed bg-slate-900 opacity-75' => ! ($product->track_inventory && $product->stock_quantity === 0),
-                    ])
-                >
-                    {{ $product->track_inventory && $product->stock_quantity === 0
-                        ? 'Out of stock'
-                        : 'Add to cart' }}
-                </button>
+                @if (! $product->track_inventory || $product->stock_quantity > 0)
+                    <form
+                        method="POST"
+                        action="{{ route('cart.items.store', ['product' => $product->slug]) }}"
+                        class="mt-6 flex gap-3"
+                    >
+                        @csrf
+
+                        <div>
+                            <label
+                                for="quantity"
+                                class="mb-1 block text-xs text-slate-500"
+                            >
+                                Quantity
+                            </label>
+
+                            <input
+                                id="quantity"
+                                type="number"
+                                name="quantity"
+                                value="1"
+                                min="1"
+                                max="{{ $product->track_inventory ? $product->stock_quantity : 99 }}"
+                                class="w-24 rounded-xl border border-slate-300 px-3 py-3"
+                            >
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="mt-5 flex-1 rounded-xl bg-slate-950 px-6 py-4 text-sm font-bold text-white hover:bg-orange-600"
+                        >
+                            Add to cart
+                        </button>
+                    </form>
+                @else
+                    <button
+                        type="button"
+                        disabled
+                        class="mt-6 w-full cursor-not-allowed rounded-xl bg-slate-300 px-6 py-4 text-sm font-bold text-white"
+                    >
+                        Out of stock
+                    </button>
+                @endif
 
                 <p class="mt-3 text-center text-xs text-slate-500">
                     Cart functionality will be connected in the next step.
@@ -206,7 +236,188 @@
                     </p>
                 @endif
             </div>
+                    @if (session('success'))
+                        <div class="mt-8 rounded-xl bg-emerald-100 px-4 py-3 text-sm text-emerald-800">
+                            {{ session('success') }}
+                        </div>
+                    @endif
 
+                    @error('review')
+                        <div class="mt-8 rounded-xl bg-red-100 px-4 py-3 text-sm text-red-700">
+                            {{ $message }}
+                        </div>
+                    @enderror
+
+                    @guest
+                        <div class="mt-8 rounded-xl border border-slate-200 bg-white p-6">
+                            <p class="font-bold">Want to review this product?</p>
+
+                            <p class="mt-2 text-sm text-slate-500">
+                                Login or create an account to submit a review.
+                            </p>
+
+                            <div class="mt-4 flex gap-3">
+                                <a
+                                    href="{{ route('login') }}"
+                                    class="rounded-lg bg-slate-950 px-4 py-2 text-sm font-bold text-white"
+                                >
+                                    Login
+                                </a>
+
+                                <a
+                                    href="{{ route('register') }}"
+                                    class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold"
+                                >
+                                    Sign up
+                                </a>
+                            </div>
+                        </div>
+                    @else
+                        @if (auth()->user()->role === 'customer')
+                            @if ($customerReview)
+                                @if ($customerReview->is_approved)
+                                    <div class="mt-8 rounded-xl border border-emerald-200 bg-emerald-50 p-5">
+                                        <p class="font-bold text-emerald-800">
+                                            Your review is approved.
+                                        </p>
+
+                                        <p class="mt-1 text-sm text-emerald-700">
+                                            It is visible in the customer reviews below.
+                                        </p>
+                                    </div>
+                                @elseif ($customerReview->rejected_at)
+                                    <div class="mt-8 rounded-xl border border-red-200 bg-red-50 p-5">
+                                        <p class="font-bold text-red-800">
+                                            Your review was rejected.
+                                        </p>
+
+                                        <p class="mt-1 text-sm text-red-700">
+                                            You can edit it and submit it again.
+                                        </p>
+                                    </div>
+                                @else
+                                    <div class="mt-8 rounded-xl border border-amber-200 bg-amber-50 p-5">
+                                        <p class="font-bold text-amber-800">
+                                            Your review is waiting for approval.
+                                        </p>
+
+                                        <p class="mt-1 text-sm text-amber-700">
+                                            You can update it while it is pending.
+                                        </p>
+                                    </div>
+                                @endif
+                            @endif
+
+                            @if ($canSubmitReview)
+                                <div class="mt-6 rounded-xl border border-slate-200 bg-white p-6">
+                                    <h3 class="text-xl font-bold">
+                                        {{ $customerReview ? 'Update your review' : 'Write a review' }}
+                                    </h3>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ route('products.reviews.store', ['product' => $product->slug]) }}"
+                                        class="mt-6 space-y-5"
+                                    >
+                                        @csrf
+
+                                        <div>
+                                            <label
+                                                for="rating"
+                                                class="mb-2 block text-sm font-semibold"
+                                            >
+                                                Rating
+                                            </label>
+
+                                            <select
+                                                id="rating"
+                                                name="rating"
+                                                required
+                                                class="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+                                            >
+                                                <option value="">Choose a rating</option>
+
+                                                @for ($rating = 5; $rating >= 1; $rating--)
+                                                    <option
+                                                        value="{{ $rating }}"
+                                                        @selected(
+                                                            (int) old(
+                                                                'rating',
+                                                                $customerReview?->rating,
+                                                            ) === $rating
+                                                        )
+                                                    >
+                                                        {{ $rating }}/5
+                                                    </option>
+                                                @endfor
+                                            </select>
+
+                                            @error('rating')
+                                                <p class="mt-2 text-sm text-red-600">
+                                                    {{ $message }}
+                                                </p>
+                                            @enderror
+                                        </div>
+
+                                        <div>
+                                            <label
+                                                for="review_title"
+                                                class="mb-2 block text-sm font-semibold"
+                                            >
+                                                Title
+                                            </label>
+
+                                            <input
+                                                id="review_title"
+                                                type="text"
+                                                name="title"
+                                                value="{{ old('title', $customerReview?->title) }}"
+                                                maxlength="150"
+                                                class="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+                                            >
+
+                                            @error('title')
+                                                <p class="mt-2 text-sm text-red-600">
+                                                    {{ $message }}
+                                                </p>
+                                            @enderror
+                                        </div>
+
+                                        <div>
+                                            <label
+                                                for="review_comment"
+                                                class="mb-2 block text-sm font-semibold"
+                                            >
+                                                Review
+                                            </label>
+
+                                            <textarea
+                                                id="review_comment"
+                                                name="comment"
+                                                rows="5"
+                                                maxlength="3000"
+                                                required
+                                                class="w-full rounded-lg border border-slate-300 px-3 py-2.5"
+                                            >{{ old('comment', $customerReview?->comment) }}</textarea>
+
+                                            @error('comment')
+                                                <p class="mt-2 text-sm text-red-600">
+                                                    {{ $message }}
+                                                </p>
+                                            @enderror
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            class="rounded-lg bg-slate-950 px-5 py-3 text-sm font-bold text-white hover:bg-orange-600"
+                                        >
+                                            {{ $customerReview ? 'Resubmit review' : 'Submit review' }}
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
+                        @endif
+                    @endguest
             <div class="mt-8 space-y-4">
                 @forelse ($reviews as $review)
                     <article class="rounded-xl border border-slate-200 bg-white p-6">

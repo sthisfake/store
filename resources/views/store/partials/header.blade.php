@@ -75,7 +75,7 @@
                 href="{{ route('home') }}#deals"
                 class="hover:text-orange-700"
             >
-                discounts
+                Discounts
             </a>
 
             <a
@@ -86,6 +86,7 @@
             </a>
         </nav>
         <div class="ml-auto hidden items-center gap-3 md:flex">
+            @include('store.partials.cart-button')
             @guest
                 <a
                     href="{{ route('login') }}"
@@ -135,7 +136,10 @@
                 </form>
             @endguest
         </div>
-        <details class="relative ml-auto md:hidden">
+        <div class="ml-auto md:hidden">
+            @include('store.partials.cart-button')
+        </div>
+        <details class="relative md:hidden">
             <summary class="cursor-pointer list-none rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold">
                 Menu
             </summary>
@@ -229,3 +233,4 @@
         </details>
     </div>
 </header>
+@include('store.partials.cart-drawer')

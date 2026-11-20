@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\HomeCategoryController;
 use App\Http\Controllers\Auth\CustomerSessionController;
 use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Account\ProfileController;
+use App\Http\Controllers\Storefront\ReviewController as StorefrontReviewController;
+use App\Http\Controllers\Storefront\CartController;
+
 
 
 
@@ -118,3 +121,12 @@ Route::prefix('account')->name('account.')->middleware(['auth', 'customer'])->gr
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 });
+
+// review section
+Route::post('/products/{product:slug}/reviews',[StorefrontReviewController::class, 'store'])->middleware(['auth', 'customer'])->name('products.reviews.store');
+
+// cart section
+Route::post('/cart/items/{product:slug}',[CartController::class, 'store'])->name('cart.items.store');
+Route::patch('/cart/items/{product:slug}',[CartController::class, 'update'])->name('cart.items.update');
+Route::delete('/cart/items/{product:slug}',[CartController::class, 'destroy'])->name('cart.items.destroy');
+Route::delete('/cart',[CartController::class, 'clear'])->name('cart.clear');
