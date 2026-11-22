@@ -103,31 +103,38 @@
                         <form
                             method="POST"
                             action="{{ route('cart.items.update', ['product' => $item['product']->slug]) }}"
-                            class="flex items-end gap-2"
+                            data-cart-quantity-form
+                            class="flex items-center overflow-hidden rounded-lg border border-slate-300"
                         >
                             @csrf
                             @method('PATCH')
 
-                            <div>
-                                <label class="mb-1 block text-xs text-slate-500">
-                                    Quantity
-                                </label>
+                            <button
+                                type="button"
+                                data-cart-decrease
+                                aria-label="Decrease quantity"
+                                class="grid size-10 place-items-center text-lg font-bold hover:bg-slate-100"
+                            >
+                                -
+                            </button>
 
-                                <input
-                                    type="number"
-                                    name="quantity"
-                                    value="{{ $item['quantity'] }}"
-                                    min="1"
-                                    max="{{ $item['maximum_quantity'] }}"
-                                    class="w-20 rounded-lg border border-slate-300 px-3 py-2"
-                                >
-                            </div>
+                            <input
+                                type="number"
+                                name="quantity"
+                                value="{{ $item['quantity'] }}"
+                                min="1"
+                                max="{{ $item['maximum_quantity'] }}"
+                                data-cart-quantity
+                                class="h-10 w-14 border-x border-slate-300 text-center outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                            >
 
                             <button
-                                type="submit"
-                                class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold"
+                                type="button"
+                                data-cart-increase
+                                aria-label="Increase quantity"
+                                class="grid size-10 place-items-center text-lg font-bold hover:bg-slate-100"
                             >
-                                Update
+                                +
                             </button>
                         </form>
 

@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Storefront\ReviewController as StorefrontReviewController;
 use App\Http\Controllers\Storefront\CartController;
+use App\Http\Controllers\Account\AddressController;
 
 
 
@@ -120,6 +121,10 @@ Route::prefix('account')->name('account.')->middleware(['auth', 'customer'])->gr
         Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
+        Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
+        Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+        Route::patch('/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.default');
+        Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 });
 
 // review section

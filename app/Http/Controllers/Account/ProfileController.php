@@ -17,8 +17,15 @@ class ProfileController extends Controller
     {
         $categories = $this->navigationCategories();
 
+        $user = $request->user();
+
+        $user->load(['addresses' => function ($query): void {
+                $query->withCount('orders')->orderByDesc('is_default')->latest();
+            },
+        ]);
+
         return view('store.account.profile', [
-            'user' => $request->user(),
+            'user' => $user,
             'categories' => $categories,
         ]);
     }

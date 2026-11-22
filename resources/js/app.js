@@ -275,3 +275,75 @@ if (cartDrawer && cartOverlay) {
         openCart();
     }
 }
+
+
+const cartQuantityTimers = new WeakMap();
+
+const scheduleCartQuantityUpdate = (form) => {
+    window.clearTimeout(
+        cartQuantityTimers.get(form),
+    );
+
+    const timer = window.setTimeout(() => {
+        form.requestSubmit();
+    }, 350);
+
+    cartQuantityTimers.set(
+        form,
+        timer,
+    );
+};
+
+document.addEventListener('click', (event) => {
+    const button = event.target.closest(
+        '[data-cart-decrease], [data-cart-increase]',
+    );
+
+    if (! button) {
+        return;
+    }
+
+    const form = button.closest(
+        '[data-cart-quantity-form]',
+    );
+
+    const input = form.querySelector(
+        '[data-cart-quantity]',
+    );
+
+    const minimum = Number(input.min || 1);
+    const maximum = Number(input.max || 99);
+    const current = Number(input.value || 1);
+
+    const next = button.hasAttribute('data-cart-increase')
+        ? Math.min(current + 1, maximum)
+        : Math.max(current - 1, minimum);
+
+    if (next === current) {
+        return;
+    }
+
+    input.value = next;
+
+    scheduleCartQuantityUpdate(form);
+});
+
+document.addEventListener('change', (event) => {
+    if (! event.target.matches('[data-cart-quantity]')) {
+        return;
+    }
+
+    const form = event.target.closest(
+        '[data-cart-quantity-form]',
+    );
+
+    const minimum = Number(event.target.min || 1);
+    const maximum = Number(event.target.max || 99);
+
+    event.target.value = Math.min(
+        Math.max(Number(event.target.value || 1), minimum),
+        maximum,
+    );
+
+    scheduleCartQuantityUpdate(form);
+});
