@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.5
+ARG PHP_VERSION=8.4
 
 FROM node:24-alpine AS frontend
 
@@ -39,27 +39,12 @@ FROM php:${PHP_VERSION}-fpm-alpine AS app
 
 WORKDIR /var/www/html
 
-RUN apk add --no-cache \
-        fcgi \
-        freetype \
-        icu-libs \
-        libjpeg-turbo \
-        libpng \
-        libzip \
-        oniguruma \
-    && apk add --no-cache --virtual .build-dependencies \
-        $PHPIZE_DEPS \
-        freetype-dev \
-        icu-dev \
-        libjpeg-turbo-dev \
-        libpng-dev \
-        libzip-dev \
-        linux-headers \
-        oniguruma-dev \
-    && docker-php-ext-configure gd \
-        --with-freetype \
-        --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" \
+COPY --from=ghcr.io/mlocati/php-extension-installer:latest \
+    /usr/bin/install-php-extensions \
+    /usr/local/bin/install-php-extensions
+
+RUN apk add --no-cache fcgi \
+    && IPE_PROCESSOR_COUNT=1 install-php-extensions \
         bcmath \
         exif \
         gd \
@@ -68,10 +53,8 @@ RUN apk add --no-cache \
         opcache \
         pcntl \
         pdo_mysql \
-        zip \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del .build-dependencies
+        redis \
+        zip
 
 COPY --chown=www-data:www-data . .
 COPY --from=vendor --chown=www-data:www-data /app/vendor ./vendor
