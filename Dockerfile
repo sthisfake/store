@@ -111,4 +111,4 @@ COPY docker/nginx/default.conf.template /etc/nginx/templates/default.conf.templa
 
 RUN mkdir -p /var/www/html/storage/app/public \
     && rm -rf /var/www/html/public/storage \
-    && ln -s /var/www/html/storage/app/public /var/www/html/public/stora
+    && ln -s /var/www/html/storage/app/public /var/www/html/public/storage
