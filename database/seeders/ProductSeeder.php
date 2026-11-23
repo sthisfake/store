@@ -16,7 +16,7 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        fake()->seed(20261113);
+        mt_srand(20261113);
 
         $imagePaths = $this->storeSeedImages();
 
@@ -64,14 +64,20 @@ class ProductSeeder extends Seeder
             );
 
             $name = "{$brand} {$productType} {$model}";
-            $price = fake()->randomFloat(
-                2,
-                $profile['minimum_price'],
-                $profile['maximum_price'],
+            $minimumPriceInCents = (int) round(
+                $profile['minimum_price'] * 100,
             );
 
+            $maximumPriceInCents = (int) round(
+                $profile['maximum_price'] * 100,
+            );
+
+            $price = mt_rand(
+                $minimumPriceInCents,
+                $maximumPriceInCents,
+            ) / 100;
             $discountPercentage = $index % 3 === 0
-                ? fake()->numberBetween(10, 30)
+                ? mt_rand(10, 30)
                 : null;
 
             $salePrice = $discountPercentage === null
@@ -103,7 +109,7 @@ class ProductSeeder extends Seeder
                     'product_type' => ProductType::PHYSICAL->value,
                     'stock_quantity' => $index === 10
                         ? 0
-                        : fake()->numberBetween(5, 100),
+                        : mt_rand(5, 100),
                     'track_inventory' => true,
                 ],
             );
