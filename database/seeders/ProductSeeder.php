@@ -126,7 +126,9 @@ class ProductSeeder extends Seeder
         $storedPaths = [];
 
         foreach ($sourceFiles as $sourceFile) {
-            $sourcePath = base_path($sourceFile);
+            $sourcePath = database_path(
+            'seeders/assets/products/'.$sourceFile,
+            );
 
             if (! File::exists($sourcePath)) {
                 throw new RuntimeException(
