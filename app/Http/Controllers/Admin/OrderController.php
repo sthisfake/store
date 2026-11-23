@@ -100,13 +100,11 @@ class OrderController extends Controller
             case OrderStatus::PENDING:
                 return [
                     OrderStatus::PROCESSING,
-                    OrderStatus::CANCELLED,
                 ];
 
             case OrderStatus::PROCESSING:
                 return [
                     OrderStatus::SHIPPED,
-                    OrderStatus::CANCELLED,
                 ];
 
             case OrderStatus::SHIPPED:
@@ -115,11 +113,10 @@ class OrderController extends Controller
                 ];
 
             case OrderStatus::DELIVERED:
-                return [
-                    OrderStatus::REFUNDED,
-                ];
+                return [];
 
             case OrderStatus::CANCELLED:
+                return [];
             case OrderStatus::REFUNDED:
                 return [];
 

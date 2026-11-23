@@ -115,6 +115,11 @@ class SessionCart
         return session()->get(self::SESSION_KEY,[]);
     }
 
+    public function checkoutQuantities(): array
+    {
+        return $this->quantities();
+    }
+
     private function save(array $quantities): void {
         session()->put(self::SESSION_KEY,$quantities);
     }

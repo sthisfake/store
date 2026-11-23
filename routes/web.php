@@ -19,11 +19,8 @@ use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Storefront\ReviewController as StorefrontReviewController;
 use App\Http\Controllers\Storefront\CartController;
 use App\Http\Controllers\Account\AddressController;
-
-
-
-
-
+use App\Http\Controllers\Account\OrderController as AccountOrderController;
+use App\Http\Controllers\Storefront\CheckoutController;
 
 
 
@@ -125,6 +122,15 @@ Route::prefix('account')->name('account.')->middleware(['auth', 'customer'])->gr
         Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
         Route::patch('/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.default');
         Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
+        Route::get('/orders', [AccountOrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [AccountOrderController::class, 'show'])->name('orders.show');
+});
+
+// checkout and payment section
+Route::middleware(['auth', 'customer'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.show');
+    // block is the way to block the same session to request
+    Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->block(10, 10)->name('checkout.pay');
 });
 
 // review section

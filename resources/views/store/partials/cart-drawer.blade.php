@@ -177,6 +177,13 @@
                 Shipping and taxes will be calculated during checkout.
             </p>
 
+            <a
+                href="{{ route('checkout.show') }}"
+                class="mt-5 block w-full rounded-lg bg-slate-950 px-4 py-3 text-center text-sm font-bold text-white hover:bg-orange-600"
+            >
+                Checkout
+            </a>
+
             <form
                 method="POST"
                 action="{{ route('cart.clear') }}"

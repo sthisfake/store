@@ -48,6 +48,13 @@
                         >
                             Addresses
                         </a>
+
+                        <a
+                            href="{{ route('account.orders.index') }}"
+                            class="mt-2 block rounded-lg px-4 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+                        >
+                            My orders
+                        </a>
                     </div>
                 </div>
             </aside>
